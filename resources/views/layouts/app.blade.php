@@ -19,7 +19,8 @@
     <style>
         :root { --bg-primary: #0f172a; --bg-secondary: #1e1b4b; --accent-cyan: #06b6d4; --accent-violet: #8b5cf6; --accent-emerald: #10b981; }
         * { font-family: 'Inter', sans-serif; box-sizing: border-box; }
-        body { background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%); min-height: 100vh; padding-bottom: 80px; }
+        body { background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%); min-height: 100vh; padding-bottom: 80px; overflow: hidden; }
+        @media (min-width: 1024px) { body { overflow: hidden; } .main-scroll { overflow-y: auto; height: 100vh; } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 5px rgba(6,182,212,0.2); } 50% { box-shadow: 0 0 20px rgba(6,182,212,0.4); } }
         .glass-card { background: rgba(255,255,255,0.04); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08); border-radius: 1rem; }
@@ -141,7 +142,7 @@
         </aside>
 
         <!-- Main Content -->
-        <main class="lg:ml-64 pt-20 pb-4 px-4 lg:pt-4 lg:pb-8 lg:px-8" style="padding-bottom: 100px;">
+        <main class="lg:ml-64 pt-20 pb-4 px-4 lg:pt-4 lg:pb-8 lg:px-8 main-scroll" style="padding-bottom: 100px;">
             @yield('content')
         </main>
 
