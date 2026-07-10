@@ -12,25 +12,14 @@ use Illuminate\Support\Facades\Route;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
-// Protected routes - use session auth for web requests
-Route::middleware('session.auth')->group(function () {
-    // Auth
+// Protected routes - add web middleware for session support
+Route::middleware(['web', 'session.auth'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);
-
-    // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index']);
-
-    // Customers (all authenticated users)
     Route::apiResource('customers', CustomerController::class);
-
-    // Orders (all authenticated users)
     Route::apiResource('orders', OrderController::class);
-
-    // Payments (all authenticated users)
     Route::apiResource('payments', PaymentController::class)->only(['index', 'store', 'show', 'destroy']);
-
-    // Reports (admin only)
     Route::middleware('admin')->group(function () {
         Route::get('/reports/daily-sales', [ReportController::class, 'dailySales']);
     });

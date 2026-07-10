@@ -25,8 +25,7 @@ class AuthController extends Controller
             'role' => $request->role ?? 'staff',
         ]);
 
-        // Store user ID in session
-        session(['auth_user_id' => $user->id]);
+        \Illuminate\Support\Facades\Auth::login($user);
 
         if ($request->expectsJson()) {
             $token = $user->createToken('auth-token')->plainTextToken;
@@ -43,9 +42,9 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        $user = User::where('email', $request->email)->first();
+        $credentials = $request->only('email', 'password');
 
-        if (! $user || ! Hash::check($request->password, $user->password)) {
+        if (!\Illuminate\Support\Facades\Auth::attempt($credentials)) {
             if ($request->expectsJson()) {
                 throw ValidationException::withMessages([
                     'email' => ['The provided credentials are incorrect.'],
@@ -54,25 +53,23 @@ class AuthController extends Controller
             return back()->withErrors(['email' => 'The provided credentials are incorrect.'])->withInput($request->only('email'));
         }
 
-        // Store user ID in session
-        session(['auth_user_id' => $user->id]);
+        $request->session()->regenerate();
 
         if ($request->expectsJson()) {
+            $user = \Illuminate\Support\Facades\Auth::user();
             $token = $user->createToken('auth-token')->plainTextToken;
             return response()->json(['user' => $user, 'token' => $token]);
         }
 
-        return redirect()->route('dashboard');
+        return redirect()->intended(route('dashboard'));
     }
 
     public function logout(Request $request)
     {
-        session()->forget('auth_user_id');
-        
-        if ($request->user()) {
-            $request->user()->currentAccessToken()->delete();
-        }
-        
+        \Illuminate\Support\Facades\Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
         return redirect()->route('login');
     }
 
