@@ -11,14 +11,12 @@ use Illuminate\Support\Facades\Route;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
-// API routes with session support (no CSRF)
 Route::middleware([
     \Illuminate\Cookie\Middleware\EncryptCookies::class,
     \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
     \Illuminate\Session\Middleware\StartSession::class,
     \Illuminate\View\Middleware\ShareErrorsFromSession::class,
     \Illuminate\Routing\Middleware\SubstituteBindings::class,
-    'auth',
 ])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);
@@ -26,7 +24,5 @@ Route::middleware([
     Route::apiResource('customers', CustomerController::class);
     Route::apiResource('orders', OrderController::class);
     Route::apiResource('payments', PaymentController::class)->only(['index', 'store', 'show', 'destroy']);
-    Route::middleware('admin')->group(function () {
-        Route::get('/reports/daily-sales', [ReportController::class, 'dailySales']);
-    });
+    Route::get('/reports/daily-sales', [ReportController::class, 'dailySales']);
 });

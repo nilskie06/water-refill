@@ -38,9 +38,81 @@
         .mobile-overlay { background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); }
         select.input-field { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E"); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1.5em 1.5em; padding-right: 2.5rem; }
         select.input-field option { background: #1e1b4b; color: white; }
+
+        /* Loading Screen */
+        #loading-screen {
+            position: fixed; inset: 0; z-index: 9999;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+            display: flex; align-items: center; justify-content: center;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        #loading-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+
+        .loader-container { text-align: center; }
+        .loader-ring {
+            width: 80px; height: 80px; margin: 0 auto 24px;
+            position: relative;
+        }
+        .loader-ring::before, .loader-ring::after {
+            content: ''; position: absolute; inset: 0;
+            border-radius: 50%; border: 3px solid transparent;
+        }
+        .loader-ring::before {
+            border-top-color: #06b6d4; border-right-color: #06b6d4;
+            animation: spin 1s linear infinite;
+        }
+        .loader-ring::after {
+            inset: 8px; border-bottom-color: #8b5cf6; border-left-color: #8b5cf6;
+            animation: spin 1.5s linear infinite reverse;
+        }
+        .loader-dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: #06b6d4; display: inline-block; margin: 0 4px;
+            animation: bounce 1.4s infinite ease-in-out;
+        }
+        .loader-dot:nth-child(1) { animation-delay: -0.32s; }
+        .loader-dot:nth-child(2) { animation-delay: -0.16s; background: #8b5cf6; }
+        .loader-dot:nth-child(3) { background: #10b981; }
+        .loader-text {
+            margin-top: 20px; font-size: 0.875rem; color: rgba(255,255,255,0.5);
+            letter-spacing: 0.2em; text-transform: uppercase;
+            animation: pulse-text 2s ease-in-out infinite;
+        }
+        .loader-icon {
+            font-size: 2.5rem; margin-bottom: 16px;
+            animation: float 3s ease-in-out infinite;
+        }
+        .loader-glow {
+            position: absolute; width: 200px; height: 200px;
+            background: radial-gradient(circle, rgba(6,182,212,0.15) 0%, transparent 70%);
+            border-radius: 50%; animation: glow-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+        @keyframes glow-pulse { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.3); opacity: 1; } }
+        @keyframes pulse-text { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+        @keyframes slide-up { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .content-reveal { animation: slide-up 0.6s ease forwards; }
     </style>
 </head>
 <body class="text-white/90">
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="loader-container">
+            <div class="loader-glow"></div>
+            <div class="loader-icon">💧</div>
+            <div class="loader-ring"></div>
+            <div style="margin-top: 20px;">
+                <span class="loader-dot"></span>
+                <span class="loader-dot"></span>
+                <span class="loader-dot"></span>
+            </div>
+            <div class="loader-text">Loading Water Refill</div>
+        </div>
+    </div>
+
     <div x-data="{ open: false }" class="flex min-h-screen">
         <!-- Mobile Menu Button -->
         <button @click="open = !open" class="lg:hidden fixed top-4 left-4 z-50 p-2 glass-card text-white/70 hover:text-white">
@@ -70,10 +142,24 @@
         </aside>
 
         <!-- Main Content -->
-        <main class="flex-1 p-4 lg:p-8" style="animation: fadeIn 0.6s ease">
+        <main class="flex-1 p-4 lg:p-8 content-reveal">
             @yield('content')
         </main>
     </div>
+
+    <script>
+        // Loading screen logic
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.getElementById('loading-screen').classList.add('hidden');
+            }, 1200);
+        });
+        // Fallback: hide after 3 seconds max
+        setTimeout(function() {
+            var ls = document.getElementById('loading-screen');
+            if (ls && !ls.classList.contains('hidden')) ls.classList.add('hidden');
+        }, 3000);
+    </script>
 
     @yield('scripts')
 </body>
