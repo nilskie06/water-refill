@@ -19,8 +19,8 @@
     <style>
         :root { --bg-primary: #0f172a; --bg-secondary: #1e1b4b; --accent-cyan: #06b6d4; --accent-violet: #8b5cf6; --accent-emerald: #10b981; }
         * { font-family: 'Inter', sans-serif; box-sizing: border-box; }
-        body { background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%); min-height: 100vh; padding-bottom: 80px; overflow: hidden; }
-        @media (min-width: 1024px) { body { overflow: hidden; } .main-scroll { overflow-y: auto; height: 100vh; } }
+        body { background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%); }
+        @media (max-width: 1023px) { body { padding-bottom: 80px; } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 5px rgba(6,182,212,0.2); } 50% { box-shadow: 0 0 20px rgba(6,182,212,0.4); } }
         .glass-card { background: rgba(255,255,255,0.04); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08); border-radius: 1rem; }
@@ -90,7 +90,7 @@
         </div>
     </div>
 
-    <div x-data="{ sidebarOpen: false }">
+    <div x-data="{ sidebarOpen: false }" class="lg:flex lg:h-screen">
         <!-- Hamburger Button -->
         <button @click="sidebarOpen = !sidebarOpen" class="fixed top-4 left-4 z-50 w-12 h-12 glass-card lg:hidden flex items-center justify-center" :class="sidebarOpen ? 'left-64' : 'left-4'" style="transition: left 0.3s ease;">
             <div class="hamburger" :class="sidebarOpen ? 'open' : ''">
@@ -102,7 +102,7 @@
         <div x-show="sidebarOpen" @click="sidebarOpen = false" x-transition:enter="transition-opacity duration-200" x-transition:leave="transition-opacity duration-200" class="lg:hidden fixed inset-0 z-30 bg-black/60 backdrop-blur-sm"></div>
 
         <!-- Sidebar -->
-        <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'" class="sidebar fixed lg:sticky top-0 left-0 w-64 h-screen z-40 transition-transform duration-300 flex flex-col">
+        <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'" class="sidebar fixed lg:sticky top-0 left-0 w-64 h-screen shrink-0 z-40 transition-transform duration-300 flex flex-col">
             <div class="p-6">
                 <h1 class="text-xl font-bold bg-gradient-to-r from-cyan-400 to-violet-400 bg-clip-text text-transparent">💧 Water Refill</h1>
                 <p class="text-white/40 text-xs mt-1">Management System</p>
@@ -142,7 +142,7 @@
         </aside>
 
         <!-- Main Content -->
-        <main class="lg:ml-64 pt-20 pb-4 px-4 lg:pt-4 lg:pb-8 lg:px-8 main-scroll" style="padding-bottom: 100px;">
+        <main class="lg:flex-1 pt-20 pb-4 px-4 lg:pt-4 lg:pb-6 lg:px-6 overflow-y-auto" style="padding-bottom: 100px;">
             @yield('content')
         </main>
 
