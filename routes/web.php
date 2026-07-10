@@ -1,21 +1,23 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ViewController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return redirect()->route('login');
-});
+Route::get('/', fn () => redirect()->route('login'));
 
 Route::get('/login', [ViewController::class, 'login'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/register', [ViewController::class, 'register'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
-Route::post('/logout', [AuthController::class, 'logout'])->middleware('session.auth')->name('logout');
-
-Route::middleware('session.auth')->group(function () {
+Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [ViewController::class, 'dashboard'])->name('dashboard');
     Route::get('/customers', [ViewController::class, 'customers'])->name('customers');
     Route::get('/customers/{customer}', [ViewController::class, 'customerShow'])->name('customers.show');

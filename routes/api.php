@@ -8,18 +8,17 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ReportController;
 use Illuminate\Support\Facades\Route;
 
-// Public routes
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
-// Protected routes - add session middleware without CSRF for API
+// API routes with session support (no CSRF)
 Route::middleware([
     \Illuminate\Cookie\Middleware\EncryptCookies::class,
     \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
     \Illuminate\Session\Middleware\StartSession::class,
     \Illuminate\View\Middleware\ShareErrorsFromSession::class,
     \Illuminate\Routing\Middleware\SubstituteBindings::class,
-    'session.auth',
+    'auth',
 ])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);
