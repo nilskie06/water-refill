@@ -174,13 +174,16 @@
     </div>
 
     <script>
-    const token = localStorage.getItem('token');
-    if (!token) window.location.href = '/login';
+    async function api(url, opts = {}) {
+        const res = await fetch(url, { credentials: 'same-origin', ...opts });
+        if (res.status === 401) { window.location.href = '/login'; return null; }
+        return res.json();
+    }
 
     const statusBadge = { pending: 'badge-pending', delivered: 'badge-delivered', completed: 'badge-completed', cancelled: 'badge-cancelled' };
 
     async function loadDashboard() {
-        const res = await fetch('/api/dashboard', { headers: { 'Authorization': 'Bearer ' + token } });
+        const res = await fetch('/api/dashboard', { headers: { 'credentials': 'same-origin' } });
         if (!res.ok) { window.location.href = '/login'; return; }
         const data = await res.json();
         document.getElementById('todaySales').textContent = '₱' + parseFloat(data.today_sales || 0).toLocaleString('en-US', {minimumFractionDigits: 2});

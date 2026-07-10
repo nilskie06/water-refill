@@ -10,21 +10,33 @@ class SessionAuth
 {
     public function handle(Request $request, Closure $next)
     {
-        // Check if user is logged in via session
-        if (!session()->has('auth_user_id')) {
-            return redirect()->route('login');
+        // Check session first
+        if (session()->has('auth_user_id')) {
+            $user = User::find(session('auth_user_id'));
+            if ($user) {
+                $request->setUserResolver(fn () => $user);
+                return $next($request);
+            }
         }
 
-        // Load fresh user from database
-        $user = User::find(session('auth_user_id'));
-        if (!$user) {
-            session()->forget('auth_user_id');
-            return redirect()->route('login');
+        // Fallback: check Bearer token (for API clients)
+        $token = $request->bearerToken();
+        if ($token) {
+            $accessToken = \Laravel\Sanctum\PersonalAccessToken::findToken($token);
+            if ($accessToken) {
+                $user = $accessToken->tokenable;
+                if ($user) {
+                    $request->setUserResolver(fn () => $user);
+                    return $next($request);
+                }
+            }
         }
 
-        // Bind user to request
-        $request->setUserResolver(fn () => $user);
+        // Not authenticated
+        if ($request->expectsJson() || $request->is('api/*')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
 
-        return $next($request);
+        return redirect()->route('login');
     }
 }

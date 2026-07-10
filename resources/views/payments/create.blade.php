@@ -101,8 +101,11 @@
     </div>
 
     <script>
-    const token = localStorage.getItem('token');
-    if (!token) window.location.href = '/login';
+    async function api(url, opts = {}) {
+        const res = await fetch(url, { credentials: 'same-origin', ...opts });
+        if (res.status === 401) { window.location.href = '/login'; return null; }
+        return res.json();
+    }
     document.getElementById('paymentDate').value = new Date().toISOString().split('T')[0];
 
     async function submitPayment(e) {
@@ -113,7 +116,7 @@
             payment_method: document.getElementById('paymentMethod').value,
             payment_date: document.getElementById('paymentDate').value
         };
-        const res = await fetch('/api/payments', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }, body: JSON.stringify(data) });
+        const res = await fetch('/api/payments', { method: 'POST', headers: { 'Content-Type': 'application/json', 'credentials': 'same-origin' }, body: JSON.stringify(data) });
         if (res.ok) window.location.href = '/payments';
         else { const err = await res.json(); alert(err.message || 'Error'); }
     }

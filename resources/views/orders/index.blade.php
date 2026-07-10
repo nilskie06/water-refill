@@ -104,13 +104,16 @@
     </div>
 
     <script>
-    const token = localStorage.getItem('token');
-    if (!token) window.location.href = '/login';
+    async function api(url, opts = {}) {
+        const res = await fetch(url, { credentials: 'same-origin', ...opts });
+        if (res.status === 401) { window.location.href = '/login'; return null; }
+        return res.json();
+    }
     const sc = { pending: 'badge-pending', delivered: 'badge-delivered', completed: 'badge-completed', cancelled: 'badge-cancelled' };
 
     async function loadOrders() {
         const status = document.getElementById('statusFilter').value;
-        const res = await fetch(`/api/orders?status=${status}`, { headers: { 'Authorization': 'Bearer ' + token } });
+        const res = await fetch(`/api/orders?status=${status}`, { headers: { 'credentials': 'same-origin' } });
         if (!res.ok) { window.location.href = '/login'; return; }
         const data = await res.json();
         document.getElementById('orderList').innerHTML = data.data.map(o => `
@@ -131,7 +134,7 @@
     }
 
     async function updateStatus(id, status) {
-        await fetch(`/api/orders/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }, body: JSON.stringify({ status }) });
+        await fetch(`/api/orders/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json', 'credentials': 'same-origin' }, body: JSON.stringify({ status }) });
         loadOrders();
     }
     loadOrders();

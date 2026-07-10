@@ -147,10 +147,14 @@
     </div>
 
     <script>
+    async function api(url, opts = {}) {
+        const res = await fetch(url, { credentials: 'same-origin', ...opts });
+        if (res.status === 401) { window.location.href = '/login'; return null; }
+        return res.json();
+    }
     function profile() {
         return {
             customer: {},
-            token: localStorage.getItem('token'),
             get pendingCount() { return (this.customer.orders || []).filter(o => o.status === 'pending').length; },
             get completedCount() { return (this.customer.orders || []).filter(o => o.status === 'completed').length; },
             get outstanding() { return (this.customer.orders || []).reduce((sum, o) => sum + parseFloat(o.balance || 0), 0); },

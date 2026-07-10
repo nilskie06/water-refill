@@ -6,7 +6,6 @@
     <title>Bottle Balances - Water Refill Station</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <style>
         :root { --bg-primary: #0f172a; --bg-secondary: #1e1b4b; --accent-cyan: #06b6d4; --accent-violet: #8b5cf6; --accent-emerald: #10b981; }
         * { font-family: 'Inter', sans-serif; }
@@ -73,28 +72,27 @@
     </main>
 
     <script>
-    const token = localStorage.getItem('token');
-    if (!token) window.location.href = '/login';
+    async function api(url) {
+        const res = await fetch(url, { credentials: 'same-origin' });
+        if (res.status === 401) { window.location.href = '/login'; return null; }
+        return res.json();
+    }
 
     async function loadBottles() {
-        const res = await fetch('/api/customers?per_page=100', { headers: { 'Authorization': 'Bearer ' + token } });
-        if (!res.ok) { window.location.href = '/login'; return; }
-        const data = await res.json();
+        const data = await api('/api/customers?per_page=100');
+        if (!data) return;
         let html = '';
         for (const c of data.data) {
-            const r = await fetch(`/api/customers/${c.id}`, { headers: { 'Authorization': 'Bearer ' + token } });
-            if (r.ok) {
-                const full = await r.json();
-                if (full.bottle_balance) {
-                    const b = full.bottle_balance;
-                    const balColor = b.balance > 0 ? 'text-amber-400' : 'text-emerald-400';
-                    html += `<tr class="table-row">
-                        <td class="px-6 py-4 font-medium text-white/90">${c.name}</td>
-                        <td class="px-6 py-4 text-white/60">${b.bottles_out}</td>
-                        <td class="px-6 py-4 text-white/60">${b.bottles_returned}</td>
-                        <td class="px-6 py-4 font-bold ${balColor}">${b.balance}</td>
-                    </tr>`;
-                }
+            const full = await api(`/api/customers/${c.id}`);
+            if (full && full.bottle_balance) {
+                const b = full.bottle_balance;
+                const balColor = b.balance > 0 ? 'text-amber-400' : 'text-emerald-400';
+                html += `<tr class="table-row">
+                    <td class="px-6 py-4 font-medium text-white/90">${c.name}</td>
+                    <td class="px-6 py-4 text-white/60">${b.bottles_out}</td>
+                    <td class="px-6 py-4 text-white/60">${b.bottles_returned}</td>
+                    <td class="px-6 py-4 font-bold ${balColor}">${b.balance}</td>
+                </tr>`;
             }
         }
         document.getElementById('bottleList').innerHTML = html || '<tr><td colspan="4" class="px-6 py-12 text-center text-white/30">No bottle records found</td></tr>';

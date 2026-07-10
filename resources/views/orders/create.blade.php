@@ -119,8 +119,11 @@
     </div>
 
     <script>
-    const token = localStorage.getItem('token');
-    if (!token) window.location.href = '/login';
+    async function api(url, opts = {}) {
+        const res = await fetch(url, { credentials: 'same-origin', ...opts });
+        if (res.status === 401) { window.location.href = '/login'; return null; }
+        return res.json();
+    }
 
     function calcTotal() {
         const q = parseInt(document.getElementById('quantity').value) || 0;
@@ -140,7 +143,7 @@
             bottle_in: parseInt(document.getElementById('bottleIn').value) || 0,
             bottle_out: parseInt(document.getElementById('bottleOut').value) || 1
         };
-        const res = await fetch('/api/orders', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }, body: JSON.stringify(data) });
+        const res = await fetch('/api/orders', { method: 'POST', headers: { 'Content-Type': 'application/json', 'credentials': 'same-origin' }, body: JSON.stringify(data) });
         if (res.ok) window.location.href = '/orders';
         else alert('Error creating order');
     }

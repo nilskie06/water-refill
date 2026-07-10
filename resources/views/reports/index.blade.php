@@ -6,7 +6,6 @@
     <title>Reports - Water Refill Station</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <style>
         :root { --bg-primary: #0f172a; --bg-secondary: #1e1b4b; --accent-cyan: #06b6d4; --accent-violet: #8b5cf6; --accent-emerald: #10b981; }
         * { font-family: 'Inter', sans-serif; }
@@ -107,9 +106,13 @@
     </main>
 
     <script>
-    const token = localStorage.getItem('token');
-    if (!token) window.location.href = '/login';
     const fmt = n => parseFloat(n || 0).toLocaleString('en-US', {minimumFractionDigits: 2});
+
+    async function api(url) {
+        const res = await fetch(url, { credentials: 'same-origin' });
+        if (res.status === 401) { window.location.href = '/login'; return null; }
+        return res.json();
+    }
 
     function setToday() {
         const today = new Date().toISOString().split('T')[0];
@@ -121,9 +124,8 @@
     async function loadReport() {
         const from = document.getElementById('dateFrom').value;
         const to = document.getElementById('dateTo').value;
-        const res = await fetch(`/api/reports/daily-sales?date_from=${from}&date_to=${to}`, { headers: { 'Authorization': 'Bearer ' + token } });
-        if (!res.ok) return;
-        const data = await res.json();
+        const data = await api(`/api/reports/daily-sales?date_from=${from}&date_to=${to}`);
+        if (!data) return;
         document.getElementById('totalOrders').textContent = data.summary?.total_orders || 0;
         document.getElementById('bottlesSold').textContent = data.summary?.total_bottles_sold || 0;
         document.getElementById('grossSales').textContent = '₱' + fmt(data.summary?.gross_sales);

@@ -80,11 +80,14 @@
     </div>
 
     <script>
-    const token = localStorage.getItem('token');
-    if (!token) window.location.href = '/login';
+    async function api(url, opts = {}) {
+        const res = await fetch(url, { credentials: 'same-origin', ...opts });
+        if (res.status === 401) { window.location.href = '/login'; return null; }
+        return res.json();
+    }
 
     async function loadPayments() {
-        const res = await fetch('/api/payments', { headers: { 'Authorization': 'Bearer ' + token } });
+        const res = await fetch('/api/payments', { headers: { 'credentials': 'same-origin' } });
         if (!res.ok) { window.location.href = '/login'; return; }
         const data = await res.json();
         document.getElementById('paymentList').innerHTML = data.data.map(p => `

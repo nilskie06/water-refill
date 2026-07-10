@@ -114,12 +114,15 @@
     </div>
 
     <script>
-    const token = localStorage.getItem('token');
-    if (!token) window.location.href = '/login';
+    async function api(url, opts = {}) {
+        const res = await fetch(url, { credentials: 'same-origin', ...opts });
+        if (res.status === 401) { window.location.href = '/login'; return null; }
+        return res.json();
+    }
 
     async function loadCustomers() {
         const search = document.getElementById('searchInput').value;
-        const res = await fetch(`/api/customers?search=${search}`, { headers: { 'Authorization': 'Bearer ' + token } });
+        const res = await fetch(`/api/customers?search=${search}`, { headers: { 'credentials': 'same-origin' } });
         if (!res.ok) { window.location.href = '/login'; return; }
         const data = await res.json();
         document.getElementById('customerList').innerHTML = data.data.map(c => `
@@ -163,13 +166,13 @@
         const data = { name: document.getElementById('customerName').value, contact: document.getElementById('customerContact').value, address: document.getElementById('customerAddress').value, notes: document.getElementById('customerNotes').value };
         const url = id ? `/api/customers/${id}` : '/api/customers';
         const method = id ? 'PUT' : 'POST';
-        await fetch(url, { method, headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }, body: JSON.stringify(data) });
+        await fetch(url, { method, headers: { 'Content-Type': 'application/json', 'credentials': 'same-origin' }, body: JSON.stringify(data) });
         closeModal();
         loadCustomers();
     }
     async function deleteCustomer(id) {
         if (!confirm('Delete this customer?')) return;
-        await fetch(`/api/customers/${id}`, { method: 'DELETE', headers: { 'Authorization': 'Bearer ' + token } });
+        await fetch(`/api/customers/${id}`, { method: 'DELETE', headers: { 'credentials': 'same-origin' } });
         loadCustomers();
     }
     loadCustomers();
