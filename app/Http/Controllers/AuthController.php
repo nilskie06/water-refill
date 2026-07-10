@@ -53,8 +53,6 @@ class AuthController extends Controller
             return back()->withErrors(['email' => 'The provided credentials are incorrect.'])->withInput($request->only('email'));
         }
 
-        $request->session()->regenerate();
-
         if ($request->expectsJson()) {
             $user = \Illuminate\Support\Facades\Auth::user();
             $token = $user->createToken('auth-token')->plainTextToken;
