@@ -44,14 +44,14 @@
         select.input-field option { background: #1e1b4b; color: white; }
         .mobile-cards { display: none; }
         @media (max-width: 768px) { .desktop-table { display: none !important; } .mobile-cards { display: block !important; } }
-        .hamburger { width: 28px; height: 20px; position: relative; cursor: pointer; }
+        .hamburger { width: 24px; height: 18px; position: relative; cursor: pointer; margin: auto; }
         .hamburger span { position: absolute; height: 2px; width: 100%; background: white; border-radius: 2px; transition: all 0.3s ease; }
         .hamburger span:nth-child(1) { top: 0; }
-        .hamburger span:nth-child(2) { top: 9px; }
-        .hamburger span:nth-child(3) { top: 18px; }
-        .hamburger.open span:nth-child(1) { transform: rotate(45deg); top: 9px; }
+        .hamburger span:nth-child(2) { top: 8px; }
+        .hamburger span:nth-child(3) { top: 16px; }
+        .hamburger.open span:nth-child(1) { transform: rotate(45deg); top: 8px; }
         .hamburger.open span:nth-child(2) { opacity: 0; }
-        .hamburger.open span:nth-child(3) { transform: rotate(-45deg); top: 9px; }
+        .hamburger.open span:nth-child(3) { transform: rotate(-45deg); top: 8px; }
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; z-index: 50; background: rgba(15,23,42,0.95); backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,0.08); padding: 8px 0 env(safe-area-inset-bottom, 8px); }
         .bottom-nav-item { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 0; color: rgba(255,255,255,0.4); text-decoration: none; font-size: 0.625rem; transition: all 0.2s; min-width: 48px; }
         .bottom-nav-item.active { color: var(--accent-cyan); }
@@ -94,7 +94,7 @@
 
     <div x-data="{ sidebarOpen: false }">
         <!-- Hamburger Button -->
-        <button @click="sidebarOpen = !sidebarOpen" class="fixed top-4 left-4 z-50 p-3 glass-card lg:hidden" :class="sidebarOpen ? 'left-64' : 'left-4'" style="transition: left 0.3s ease;">
+        <button @click="sidebarOpen = !sidebarOpen" class="fixed top-4 left-4 z-50 w-12 h-12 glass-card lg:hidden flex items-center justify-center" :class="sidebarOpen ? 'left-64' : 'left-4'" style="transition: left 0.3s ease;">
             <div class="hamburger" :class="sidebarOpen ? 'open' : ''">
                 <span></span><span></span><span></span>
             </div>
@@ -144,7 +144,7 @@
         </aside>
 
         <!-- Main Content -->
-        <main class="lg:ml-0 p-4 lg:p-8 content-reveal" style="padding-bottom: 100px;">
+        <main class="lg:ml-64 p-4 lg:p-8 content-reveal" style="padding-bottom: 100px;">
             @yield('content')
         </main>
 
