@@ -12,8 +12,15 @@ use Illuminate\Support\Facades\Route;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
-// Protected routes - add web middleware for session support
-Route::middleware(['web', 'session.auth'])->group(function () {
+// Protected routes - add session middleware without CSRF for API
+Route::middleware([
+    \Illuminate\Cookie\Middleware\EncryptCookies::class,
+    \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+    \Illuminate\Session\Middleware\StartSession::class,
+    \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+    \Illuminate\Routing\Middleware\SubstituteBindings::class,
+    'session.auth',
+])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);
     Route::get('/dashboard', [DashboardController::class, 'index']);

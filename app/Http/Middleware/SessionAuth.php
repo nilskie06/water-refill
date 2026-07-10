@@ -9,13 +9,18 @@ class SessionAuth
 {
     public function handle(Request $request, Closure $next)
     {
-        // Start session if not started
-        if (!$request->hasSession() && $request->hasCookie(session()->getName())) {
-            $request->setLaravelSession(session()->driver()->start($request));
+        // Ensure session is started
+        if (!$request->hasSession() && $request->cookies->has(session()->getName())) {
+            $request->setLaravelSession(
+                \Illuminate\Support\Facades\Session::driver()->start($request)
+            );
         }
 
-        if (\Illuminate\Support\Facades\Auth::guard('web')->check()) {
-            $request->setUserResolver(fn () => \Illuminate\Support\Facades\Auth::guard('web')->user());
+        // Check if user is authenticated via web guard
+        $user = \Illuminate\Support\Facades\Auth::guard('web')->user();
+        
+        if ($user) {
+            $request->setUserResolver(fn () => $user);
             return $next($request);
         }
 
