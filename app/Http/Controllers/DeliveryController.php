@@ -20,7 +20,7 @@ class DeliveryController extends Controller
             $query->where('status', $request->status);
         }
         if ($request->date) {
-            $query->where('delivery_date', $request->date);
+            $query->whereDate('delivery_date', $request->date);
         }
         if ($request->driver_id) {
             $query->where('driver_id', $request->driver_id);
@@ -115,7 +115,7 @@ class DeliveryController extends Controller
         $date = $request->get('date', now()->format('Y-m-d'));
 
         $deliveries = Delivery::with(['customer', 'driver', 'vehicle'])
-            ->where('delivery_date', $date)
+            ->whereDate('delivery_date', $date)
             ->whereNotIn('status', ['cancelled', 'failed'])
             ->orderBy('route')
             ->get()
@@ -142,11 +142,11 @@ class DeliveryController extends Controller
         $today = now()->format('Y-m-d');
 
         return response()->json([
-            'today_total' => Delivery::where('delivery_date', $today)->count(),
-            'today_pending' => Delivery::where('delivery_date', $today)->whereIn('status', ['scheduled', 'assigned'])->count(),
-            'out_for_delivery' => Delivery::where('delivery_date', $today)->where('status', 'out_for_delivery')->count(),
-            'today_delivered' => Delivery::where('delivery_date', $today)->where('status', 'delivered')->count(),
-            'today_failed' => Delivery::where('delivery_date', $today)->where('status', 'failed')->count(),
+            'today_total' => Delivery::whereDate('delivery_date', $today)->count(),
+            'today_pending' => Delivery::whereDate('delivery_date', $today)->whereIn('status', ['scheduled', 'assigned'])->count(),
+            'out_for_delivery' => Delivery::whereDate('delivery_date', $today)->where('status', 'out_for_delivery')->count(),
+            'today_delivered' => Delivery::whereDate('delivery_date', $today)->where('status', 'delivered')->count(),
+            'today_failed' => Delivery::whereDate('delivery_date', $today)->where('status', 'failed')->count(),
             'drivers_available' => Driver::active()->count(),
             'vehicles_available' => Vehicle::where('status', 'available')->count(),
         ]);
