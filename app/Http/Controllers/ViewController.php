@@ -117,4 +117,9 @@ class ViewController extends Controller
     {
         return view('admin.permissions');
     }
+
+    public function users()
+    {
+        return view('admin.users');
+    }
 }

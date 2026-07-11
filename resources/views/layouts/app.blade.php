@@ -14,6 +14,7 @@
     elseif (request()->routeIs('reports')) $activePage = 'reports';
     elseif (request()->routeIs('admin.roles')) $activePage = 'roles';
     elseif (request()->routeIs('admin.permissions')) $activePage = 'permissions';
+    elseif (request()->routeIs('admin.users')) $activePage = 'users';
 @endphp
 <!DOCTYPE html>
 <html lang="en">
@@ -185,6 +186,10 @@
                         <a href="/admin/permissions" class="nav-link {{ $activePage === 'permissions' ? 'active' : '' }}" @click="sidebarOpen = false" style="padding-left: 2.5rem;">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
                             Permissions
+                        </a>
+                        <a href="/admin/users" class="nav-link {{ $activePage === 'users' ? 'active' : '' }}" @click="sidebarOpen = false" style="padding-left: 2.5rem;">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                            Users
                         </a>
                     </div>
                 </div>

@@ -43,4 +43,5 @@ Route::middleware([
     // Admin API
     Route::apiResource('roles', \App\Http\Controllers\RoleController::class);
     Route::apiResource('permissions', \App\Http\Controllers\PermissionController::class);
+    Route::apiResource('users', \App\Http\Controllers\UserController::class);
 });

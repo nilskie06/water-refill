@@ -43,6 +43,7 @@ Route::get('/vehicles', [ViewController::class, 'vehicles'])->name('vehicles');
 // Admin routes
 Route::get('/admin/roles', [ViewController::class, 'roles'])->name('admin.roles');
 Route::get('/admin/permissions', [ViewController::class, 'permissions'])->name('admin.permissions');
+Route::get('/admin/users', [ViewController::class, 'users'])->name('admin.users');
 
 Route::get('/debug-auth', function() {
     return response()->json([
