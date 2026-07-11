@@ -122,4 +122,9 @@ class ViewController extends Controller
     {
         return view('admin.users');
     }
+
+    public function menus()
+    {
+        return view('admin.menus');
+    }
 }
