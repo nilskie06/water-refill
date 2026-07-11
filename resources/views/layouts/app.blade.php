@@ -136,12 +136,16 @@
                 </a>
                 <!-- Deliveries (collapsible) -->
                 <div x-data="{ open: false }">
-                    <a href="/deliveries" class="nav-link {{ $activePage === 'deliveries' ? 'active' : '' }}" @click="open = !open; sidebarOpen = false">
+                    <a href="#" class="nav-link {{ $activePage === 'deliveries' ? 'active' : '' }}" @click.prevent="open = !open; sidebarOpen = false">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17a2 2 0 100-4 2 2 0 000 4zm8 0a2 2 0 100-4 2 2 0 000 4zM5.5 17H3V7l2-3h12l3 5v8h-2.5M8 17H17m-9-5h7"/></svg>
                         Deliveries
                         <svg class="w-4 h-4 ml-auto transition-transform duration-200" :class="open ? 'rotate-90' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                     </a>
                     <div x-show="open" x-collapse x-cloak class="mt-1 space-y-0.5">
+                        <a href="/deliveries" class="nav-link {{ $activePage === 'deliveries' ? 'active' : '' }}" @click="sidebarOpen = false" style="padding-left: 2.5rem;">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+                            Delivery List
+                        </a>
                         <a href="/deliveries/calendar" class="nav-link {{ $activePage === 'calendar' ? 'active' : '' }}" @click="sidebarOpen = false" style="padding-left: 2.5rem;">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                             Calendar
