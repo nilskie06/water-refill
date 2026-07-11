@@ -135,7 +135,7 @@
                     Bottles
                 </a>
                 <!-- Deliveries (collapsible) -->
-                <div x-data="{ open: {{ in_array($activePage, ['deliveries','calendar','routes','drivers','vehicles','history']) ? 'true' : 'false' }} }">
+                <div x-data="{ open: false }">
                     <a href="/deliveries" class="nav-link {{ $activePage === 'deliveries' ? 'active' : '' }}" @click="open = !open; sidebarOpen = false">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17a2 2 0 100-4 2 2 0 000 4zm8 0a2 2 0 100-4 2 2 0 000 4zM5.5 17H3V7l2-3h12l3 5v8h-2.5M8 17H17m-9-5h7"/></svg>
                         Deliveries
