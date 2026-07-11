@@ -44,4 +44,9 @@ Route::middleware([
     Route::apiResource('roles', \App\Http\Controllers\RoleController::class);
     Route::apiResource('permissions', \App\Http\Controllers\PermissionController::class);
     Route::apiResource('users', \App\Http\Controllers\UserController::class);
+
+    // Menu API
+    Route::get('/menus/tree', [\App\Http\Controllers\MenuController::class, 'tree']);
+    Route::apiResource('menus', \App\Http\Controllers\MenuController::class);
+    Route::put('/menus/reorder', [\App\Http\Controllers\MenuController::class, 'reorder']);
 });
