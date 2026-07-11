@@ -5,6 +5,12 @@
     elseif (request()->routeIs('orders*')) $activePage = 'orders';
     elseif (request()->routeIs('payments*')) $activePage = 'payments';
     elseif (request()->routeIs('bottles')) $activePage = 'bottles';
+    elseif (request()->routeIs('deliveries.calendar')) $activePage = 'calendar';
+    elseif (request()->routeIs('deliveries.routes')) $activePage = 'routes';
+    elseif (request()->routeIs('deliveries.history')) $activePage = 'history';
+    elseif (request()->routeIs('deliveries*')) $activePage = 'deliveries';
+    elseif (request()->routeIs('drivers')) $activePage = 'drivers';
+    elseif (request()->routeIs('vehicles')) $activePage = 'vehicles';
     elseif (request()->routeIs('reports')) $activePage = 'reports';
 @endphp
 <!DOCTYPE html>
@@ -128,6 +134,30 @@
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
                     Bottles
                 </a>
+                <a href="/deliveries" class="nav-link {{ $activePage === 'deliveries' ? 'active' : '' }}" @click="sidebarOpen = false">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17a2 2 0 100-4 2 2 0 000 4zm8 0a2 2 0 100-4 2 2 0 000 4zM5.5 17H3V7l2-3h12l3 5v8h-2.5M8 17H17m-9-5h7"/></svg>
+                    Deliveries
+                </a>
+                <a href="/deliveries/calendar" class="nav-link {{ $activePage === 'calendar' ? 'active' : '' }}" @click="sidebarOpen = false" style="padding-left: 2.5rem;">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                    Calendar
+                </a>
+                <a href="/deliveries/routes" class="nav-link {{ $activePage === 'routes' ? 'active' : '' }}" @click="sidebarOpen = false" style="padding-left: 2.5rem;">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
+                    Routes
+                </a>
+                <a href="/drivers" class="nav-link {{ $activePage === 'drivers' ? 'active' : '' }}" @click="sidebarOpen = false" style="padding-left: 2.5rem;">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                    Drivers
+                </a>
+                <a href="/vehicles" class="nav-link {{ $activePage === 'vehicles' ? 'active' : '' }}" @click="sidebarOpen = false" style="padding-left: 2.5rem;">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17a2 2 0 100-4 2 2 0 000 4zm8 0a2 2 0 100-4 2 2 0 000 4zM5 17H3V8l2-3h12l3 5v7h-2.5"/></svg>
+                    Vehicles
+                </a>
+                <a href="/deliveries/history" class="nav-link {{ $activePage === 'history' ? 'active' : '' }}" @click="sidebarOpen = false" style="padding-left: 2.5rem;">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    History
+                </a>
                 <a href="/reports" class="nav-link {{ $activePage === 'reports' ? 'active' : '' }}" @click="sidebarOpen = false">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
                     Reports
@@ -164,6 +194,18 @@
                 <a href="/payments" class="bottom-nav-item {{ $activePage === 'payments' ? 'active' : '' }}">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                     <span>Payments</span>
+                </a>
+                <a href="/deliveries" class="bottom-nav-item {{ $activePage === 'deliveries' ? 'active' : '' }}">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17a2 2 0 100-4 2 2 0 000 4zm8 0a2 2 0 100-4 2 2 0 000 4zM5.5 17H3V7l2-3h12l3 5v8h-2.5M8 17H17m-9-5h7"/></svg>
+                    <span>Deliver</span>
+                </a>
+                <a href="/drivers" class="bottom-nav-item {{ $activePage === 'drivers' ? 'active' : '' }}">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                    <span>Drivers</span>
+                </a>
+                <a href="/vehicles" class="bottom-nav-item {{ $activePage === 'vehicles' ? 'active' : '' }}">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17a2 2 0 100-4 2 2 0 000 4zm8 0a2 2 0 100-4 2 2 0 000 4zM5 17H3V8l2-3h12l3 5v7h-2.5"/></svg>
+                    <span>Vehicles</span>
                 </a>
                 <a href="/reports" class="bottom-nav-item {{ $activePage === 'reports' ? 'active' : '' }}">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>

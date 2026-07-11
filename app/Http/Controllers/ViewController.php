@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Models\Driver;
 use App\Models\Order;
 use App\Models\Payment;
+use App\Models\Vehicle;
 use Illuminate\Http\Request;
 
 class ViewController extends Controller
@@ -64,5 +66,44 @@ class ViewController extends Controller
     public function bottles()
     {
         return view('bottles.index');
+    }
+
+    // Delivery module
+    public function deliveries()
+    {
+        return view('deliveries.index');
+    }
+
+    public function deliveryCreate()
+    {
+        $customers = Customer::orderBy('name')->get();
+        $drivers = Driver::active()->orderBy('name')->get();
+        $vehicles = Vehicle::where('status', 'available')->orderBy('plate_number')->get();
+        return view('deliveries.create', compact('customers', 'drivers', 'vehicles'));
+    }
+
+    public function deliveryCalendar()
+    {
+        return view('deliveries.calendar');
+    }
+
+    public function deliveryRoutes()
+    {
+        return view('deliveries.routes');
+    }
+
+    public function deliveryHistory()
+    {
+        return view('deliveries.history');
+    }
+
+    public function drivers()
+    {
+        return view('drivers.index');
+    }
+
+    public function vehicles()
+    {
+        return view('vehicles.index');
     }
 }
