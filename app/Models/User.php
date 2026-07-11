@@ -16,6 +16,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'role_id',
     ];
 
     protected $hidden = [
@@ -39,5 +40,16 @@ class User extends Authenticatable
     public function isStaff(): bool
     {
         return $this->role === 'staff';
+    }
+
+    public function roleEntry()
+    {
+        return $this->belongsTo(Role::class, 'role_id');
+    }
+
+    public function hasPermission(string $permission): bool
+    {
+        if ($this->role === 'admin') return true;
+        return $this->roleEntry && $this->roleEntry->hasPermission($permission);
     }
 }

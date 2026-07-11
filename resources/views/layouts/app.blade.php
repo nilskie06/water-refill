@@ -12,6 +12,8 @@
     elseif (request()->routeIs('drivers')) $activePage = 'drivers';
     elseif (request()->routeIs('vehicles')) $activePage = 'vehicles';
     elseif (request()->routeIs('reports')) $activePage = 'reports';
+    elseif (request()->routeIs('admin.roles')) $activePage = 'roles';
+    elseif (request()->routeIs('admin.permissions')) $activePage = 'permissions';
 @endphp
 <!DOCTYPE html>
 <html lang="en">
@@ -165,6 +167,24 @@
                         <a href="/deliveries/history" class="nav-link {{ $activePage === 'history' ? 'active' : '' }}" @click="sidebarOpen = false" style="padding-left: 2.5rem;">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                             History
+                        </a>
+                    </div>
+                </div>
+                <!-- Admin (collapsible) -->
+                <div x-data="{ open: {{ in_array($activePage, ['roles','permissions']) ? 'true' : 'false' }} }">
+                    <a href="#" class="nav-link {{ in_array($activePage, ['roles','permissions']) ? 'active' : '' }}" @click.prevent="open = !open; sidebarOpen = false">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                        Admin
+                        <svg class="w-4 h-4 ml-auto transition-transform duration-200" :class="open ? 'rotate-90' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    </a>
+                    <div x-show="open" x-collapse x-cloak class="mt-1 space-y-0.5">
+                        <a href="/admin/roles" class="nav-link {{ $activePage === 'roles' ? 'active' : '' }}" @click="sidebarOpen = false" style="padding-left: 2.5rem;">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                            Roles
+                        </a>
+                        <a href="/admin/permissions" class="nav-link {{ $activePage === 'permissions' ? 'active' : '' }}" @click="sidebarOpen = false" style="padding-left: 2.5rem;">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
+                            Permissions
                         </a>
                     </div>
                 </div>

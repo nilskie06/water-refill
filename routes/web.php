@@ -40,6 +40,10 @@ Route::get('/deliveries/history', [ViewController::class, 'deliveryHistory'])->n
 Route::get('/drivers', [ViewController::class, 'drivers'])->name('drivers');
 Route::get('/vehicles', [ViewController::class, 'vehicles'])->name('vehicles');
 
+// Admin routes
+Route::get('/admin/roles', [ViewController::class, 'roles'])->name('admin.roles');
+Route::get('/admin/permissions', [ViewController::class, 'permissions'])->name('admin.permissions');
+
 Route::get('/debug-auth', function() {
     return response()->json([
         'auth_check' => \Illuminate\Support\Facades\Auth::check(),

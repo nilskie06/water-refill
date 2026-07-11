@@ -39,4 +39,8 @@ Route::middleware([
     Route::apiResource('deliveries', DeliveryController::class);
     Route::apiResource('drivers', DriverController::class);
     Route::apiResource('vehicles', VehicleController::class);
+
+    // Admin API
+    Route::apiResource('roles', \App\Http\Controllers\RoleController::class);
+    Route::apiResource('permissions', \App\Http\Controllers\PermissionController::class);
 });

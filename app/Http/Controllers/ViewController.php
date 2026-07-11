@@ -106,4 +106,15 @@ class ViewController extends Controller
     {
         return view('vehicles.index');
     }
+
+    // Admin module
+    public function roles()
+    {
+        return view('admin.roles');
+    }
+
+    public function permissions()
+    {
+        return view('admin.permissions');
+    }
 }
