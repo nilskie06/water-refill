@@ -7,6 +7,7 @@ use App\Models\Customer;
 use App\Models\Driver;
 use App\Models\Vehicle;
 use App\Models\Order;
+use App\Models\BottleBalance;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -52,8 +53,16 @@ class DeliveryController extends Controller
         $data['delivery_no'] = Delivery::generateDeliveryNo();
         $data['status'] = 'scheduled';
 
+        // If linked to order, sync order status
+        if (!empty($data['order_id'])) {
+            $order = Order::find($data['order_id']);
+            if ($order && $order->status !== 'completed') {
+                $order->update(['status' => 'pending_delivery']);
+            }
+        }
+
         $delivery = Delivery::create($data);
-        return response()->json($delivery->load(['customer', 'driver', 'vehicle']), 201);
+        return response()->json($delivery->load(['customer', 'driver', 'vehicle', 'order']), 201);
     }
 
     public function show(Delivery $delivery)
@@ -77,24 +86,91 @@ class DeliveryController extends Controller
             $data['status'] = 'assigned';
         }
 
+        $oldStatus = $delivery->status;
         $delivery->update($data);
+        $newStatus = $delivery->status;
 
         if (isset($data['status'])) {
-            if ($data['status'] === 'out_for_delivery' && $delivery->vehicle_id) {
+            // Vehicle status management
+            if ($newStatus === 'out_for_delivery' && $delivery->vehicle_id) {
                 Vehicle::where('id', $delivery->vehicle_id)->update(['status' => 'in_use']);
             }
-            if (in_array($data['status'], ['delivered', 'failed', 'cancelled']) && $delivery->vehicle_id) {
+            if (in_array($newStatus, ['delivered', 'failed', 'cancelled']) && $delivery->vehicle_id) {
                 Vehicle::where('id', $delivery->vehicle_id)->update(['status' => 'available']);
+            }
+
+            // Order & bottle balance wiring
+            if ($newStatus === 'delivered' && $oldStatus !== 'delivered') {
+                $this->handleDeliveryCompleted($delivery);
+            }
+            if ($newStatus === 'cancelled' && $oldStatus !== 'cancelled') {
+                $this->handleDeliveryCancelled($delivery);
+            }
+            if ($newStatus === 'failed' && $oldStatus !== 'failed') {
+                $this->handleDeliveryFailed($delivery);
             }
         }
 
-        return response()->json($delivery->fresh()->load(['customer', 'driver', 'vehicle']));
+        return response()->json($delivery->fresh()->load(['customer', 'driver', 'vehicle', 'order']));
     }
 
     public function destroy(Delivery $delivery)
     {
+        // Revert order status if linked
+        if ($delivery->order_id && $delivery->status !== 'cancelled') {
+            $this->handleDeliveryCancelled($delivery);
+        }
         $delivery->delete();
         return response()->json(['message' => 'Deleted']);
+    }
+
+    /**
+     * Handle delivery completed — update order, bottle balance
+     */
+    private function handleDeliveryCompleted(Delivery $delivery)
+    {
+        // Update linked order status
+        if ($delivery->order_id) {
+            $order = Order::find($delivery->order_id);
+            if ($order) {
+                $order->update(['status' => 'completed']);
+            }
+        }
+
+        // Update bottle balance (bottles sent out)
+        if ($delivery->customer_id && $delivery->quantity > 0) {
+            BottleBalance::updateForCustomer(
+                $delivery->customer_id,
+                $delivery->quantity,  // bottles out
+                0                     // bottles returned (not yet)
+            );
+        }
+    }
+
+    /**
+     * Handle delivery cancelled — revert order status
+     */
+    private function handleDeliveryCancelled(Delivery $delivery)
+    {
+        if ($delivery->order_id) {
+            $order = Order::find($delivery->order_id);
+            if ($order && $order->status === 'pending_delivery') {
+                $order->update(['status' => 'pending']);
+            }
+        }
+    }
+
+    /**
+     * Handle delivery failed — revert order, note remarks
+     */
+    private function handleDeliveryFailed(Delivery $delivery)
+    {
+        if ($delivery->order_id) {
+            $order = Order::find($delivery->order_id);
+            if ($order && $order->status === 'pending_delivery') {
+                $order->update(['status' => 'pending']);
+            }
+        }
     }
 
     public function calendar(Request $request)

@@ -39,6 +39,11 @@ class Order extends Model
         return $this->hasMany(Payment::class);
     }
 
+    public function deliveries()
+    {
+        return $this->hasMany(Delivery::class);
+    }
+
     public function getAmountPaidAttribute()
     {
         return $this->payments()->sum('amount');
