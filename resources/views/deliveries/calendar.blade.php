@@ -80,6 +80,8 @@ let allDeliveries = [];
 const sc = { scheduled: 'badge-pending', assigned: 'badge-delivered', out_for_delivery: 'badge-completed', delivered: 'badge-completed', failed: 'badge-cancelled', cancelled: 'badge-cancelled' };
 const dotColors = { scheduled: 'bg-cyan-400', assigned: 'bg-amber-400', out_for_delivery: 'bg-violet-400', delivered: 'bg-emerald-400', failed: 'bg-rose-400', cancelled: 'bg-rose-400' };
 
+function dateOnly(d) { return d ? d.substring(0, 10) : ''; }
+
 async function loadCalendar() {
     const from = `${currentYear}-${String(currentMonth+1).padStart(2,'0')}-01`;
     const to = new Date(currentYear, currentMonth+1, 0).toISOString().split('T')[0];
@@ -98,8 +100,9 @@ async function loadCalendar() {
     // Group by date
     const grouped = {};
     allDeliveries.forEach(d => {
-        if (!grouped[d.delivery_date]) grouped[d.delivery_date] = [];
-        grouped[d.delivery_date].push(d);
+        const key = dateOnly(d.delivery_date);
+        if (!grouped[key]) grouped[key] = [];
+        grouped[key].push(d);
     });
 
     const firstDay = new Date(currentYear, currentMonth, 1).getDay();
@@ -136,9 +139,9 @@ async function loadCalendar() {
 async function showDay(date) {
     const d = new Date(date + 'T00:00:00');
     document.getElementById('dayTitle').textContent = d.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' });
-    document.getElementById('daySubtitle').textContent = `${allDeliveries.filter(dl => dl.delivery_date === date).length} deliveries scheduled`;
+    document.getElementById('daySubtitle').textContent = `${allDeliveries.filter(dl => dateOnly(dl.delivery_date) === date).length} deliveries scheduled`;
 
-    const dayDeliveries = allDeliveries.filter(dl => dl.delivery_date === date);
+    const dayDeliveries = allDeliveries.filter(dl => dateOnly(dl.delivery_date) === date);
 
     // Day mini stats
     document.getElementById('dayScheduled').textContent = dayDeliveries.filter(dl => dl.status === 'scheduled').length;
