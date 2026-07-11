@@ -57,7 +57,7 @@ class DeliveryController extends Controller
         if (!empty($data['order_id'])) {
             $order = Order::find($data['order_id']);
             if ($order && $order->status !== 'completed') {
-                $order->update(['status' => 'pending_delivery']);
+                $order->update(['status' => 'delivered']);
             }
         }
 
@@ -154,7 +154,7 @@ class DeliveryController extends Controller
     {
         if ($delivery->order_id) {
             $order = Order::find($delivery->order_id);
-            if ($order && $order->status === 'pending_delivery') {
+            if ($order && $order->status === 'delivered') {
                 $order->update(['status' => 'pending']);
             }
         }
@@ -167,7 +167,7 @@ class DeliveryController extends Controller
     {
         if ($delivery->order_id) {
             $order = Order::find($delivery->order_id);
-            if ($order && $order->status === 'pending_delivery') {
+            if ($order && $order->status === 'delivered') {
                 $order->update(['status' => 'pending']);
             }
         }
